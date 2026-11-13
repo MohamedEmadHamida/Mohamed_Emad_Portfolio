@@ -122,16 +122,17 @@ main{position:relative;width:100%;overflow-x:hidden}
 .avail{display:inline-flex;align-items:center;gap:.6rem;font-size:.8125rem;text-transform:uppercase;letter-spacing:.18em}
 .avail::before{content:"";width:.5rem;height:.5rem;border-radius:999px;background:var(--ok);box-shadow:0 0 0 .25rem color-mix(in srgb,var(--ok) 20%,transparent)}
 .cta{display:flex;flex-wrap:wrap;gap:.75rem}
-.hero-name{position:absolute;inset-inline:0;bottom:0;z-index:10;transform:translateY(6%);display:flex;flex-direction:column;align-items:center;color:var(--accent);font-size:min(28rem,24vw);line-height:.78;transition:color .34s ease-out}
+.hero-name{position:absolute;inset-inline:0;bottom:0;z-index:16;transform:translateY(6%);display:flex;flex-direction:column;align-items:center;color:var(--accent);font-size:24vw;line-height:.78;transition:color .34s ease-out}
+@media (min-width:641px){.hero-name{flex-direction:row;justify-content:center;gap:.16em;font-size:min(20rem,14.5vw)}}
 .hero-name span{display:block;white-space:nowrap}
 .hero-name b{display:inline-block;font-weight:400}
 .hero-fade{position:absolute;inset-inline:0;bottom:0;z-index:15;height:22vh;background:linear-gradient(to bottom,transparent,var(--background));pointer-events:none}
-.reel{position:absolute;z-index:20;left:50%;bottom:13vh;transform:translateX(-50%);width:88vw;aspect-ratio:16/9;border-radius:.125rem;overflow:hidden;border:1px solid var(--line-strong);background:
+.reel{position:absolute;z-index:20;left:50%;bottom:5vh;transform:translateX(-50%);width:88vw;aspect-ratio:16/9;border-radius:.125rem;overflow:hidden;border:1px solid var(--line-strong);background:
   radial-gradient(90% 120% at 78% 18%,color-mix(in srgb,var(--accent) 16%,transparent),transparent 60%),
   radial-gradient(130% 130% at 30% 15%,var(--surface-2),var(--background));
   box-shadow:0 2.5rem 6rem -1.5rem rgba(0,0,0,.8)}
-@media (min-width:640px){.reel{width:52vw}}
-@media (min-width:1024px){.reel{width:min(44vw,calc(52svh*16/9))}}
+@media (min-width:640px){.reel{width:min(72vw,calc((95svh - 23.5rem)*16/9))}} /* never taller than the space under the intro text (~21.5rem tall) */
+@media (min-width:1024px){.reel{width:min(62vw,calc((95svh - 23.5rem)*16/9))}}
 .reel-ui{position:absolute;inset:0;display:grid;place-items:center}
 .play{width:5rem;height:5rem;border-radius:999px;border:1px solid var(--line-strong);display:grid;place-items:center;background:color-mix(in srgb,var(--background) 45%,transparent);backdrop-filter:blur(6px);transition:transform .34s ease-out,border-color .34s,background .34s}
 .play::after{content:"";border-left:1.1rem solid var(--foreground);border-top:.7rem solid transparent;border-bottom:.7rem solid transparent;margin-left:.3rem}
@@ -141,6 +142,12 @@ main{position:relative;width:100%;overflow-x:hidden}
 .rec{color:var(--foreground)}
 .cue{position:absolute;z-index:30;bottom:2rem;left:var(--gutter);display:flex;align-items:center;gap:.75rem;font-size:.8125rem;text-transform:uppercase;letter-spacing:.22em;color:var(--muted)}
 .cue::before{content:"";width:2.5rem;height:1px;background:var(--accent)}
+@media (min-width:641px){ /* desktop: stands vertically on the left edge, above the one-line name and clear of the reel */
+  .cue{bottom:calc(min(20rem,14.5vw)*.78 + 2.5rem);writing-mode:vertical-rl;transform:rotate(180deg)}
+  .cue::before{width:1px;height:2.5rem}
+}
+/* no free spot for the cue on phones or on short screens: it is only a hint, so it goes */
+@media (max-width:640px),(min-width:641px) and (max-height:700px){.cue{display:none}}
 /* hero entrance */
 .js .hero-name b{transform:translateY(100%);opacity:0;transition:transform .9s var(--expo),opacity .9s var(--expo);transition-delay:var(--d)}
 .js .roles span{transform:translateY(110%);opacity:0;transition:transform .76s var(--expo),opacity .76s var(--expo);transition-delay:var(--d)}
