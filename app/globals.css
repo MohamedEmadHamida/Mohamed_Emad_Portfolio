@@ -329,10 +329,6 @@ form{display:grid;gap:1.75rem}
 @media (min-width:1024px){.right{text-align:right}}
 .totop{margin-top:1rem;display:inline-block;color:var(--foreground)}
 
-/* accent preview (stands in for the dashboard setting) */
-.swatch{position:fixed;right:1rem;bottom:1rem;z-index:40;display:flex;align-items:center;gap:.6rem;padding:.55rem .8rem;border-radius:999px;border:1px solid var(--line-strong);background:color-mix(in srgb,var(--surface) 88%,transparent);backdrop-filter:blur(10px);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
-.swatch button{width:16px;height:16px;border-radius:999px;background:var(--c);border:2px solid transparent;outline-offset:2px}
-.swatch button[aria-pressed="true"]{border-color:var(--foreground)}
 
 /* whole project card is one link: the title link stretches over the card */
 .card{position:relative}

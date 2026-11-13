@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { sectionByKey } from "@/lib/cms-schema";
 import { getContent, getSavedSections } from "@/lib/server/content-store";
 import { ContentEditor } from "@/components/admin/ContentEditor";
+import { uploadMode } from "@/lib/server/upload-mode";
 
 export default async function EditSection({ params }: { params: Promise<{ key: string }> }) {
   const { key } = await params;
@@ -21,7 +22,7 @@ export default async function EditSection({ params }: { params: Promise<{ key: s
           <p className="adm-muted">{def.description}</p>
         </div>
       </div>
-      <ContentEditor key={def.key} def={def} initial={content[def.key]} isSaved={!!saved[def.key]} />
+      <ContentEditor key={def.key} def={def} initial={content[def.key]} isSaved={!!saved[def.key]} uploadMode={uploadMode()} />
     </>
   );
 }

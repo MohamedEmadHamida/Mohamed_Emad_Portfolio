@@ -33,6 +33,7 @@ export type Overview = {
   avgSessionMs: number;
   bounceRate: number;
   cvDownloads: number;
+  assetDownloads: number;
   projectViews: number;
   contactClicks: number;
   daily: { day: string; visitors: number; sessions: number; pageviews: number }[];
@@ -212,6 +213,7 @@ export async function getOverview(range: RangeKey): Promise<Overview | null> {
     avgSessionMs: totals.sessions ? Math.round(totals.ms / totals.sessions) : 0,
     bounceRate: totals.sessions ? totals.bounces / totals.sessions : 0,
     cvDownloads: countOf("cv_download"),
+    assetDownloads: countOf("asset_download"),
     projectViews: pageRows.filter((p) => p.key.startsWith("/projects/")).reduce((a, p) => a + p.count, 0),
     contactClicks: countOf("contact_email") + countOf("form_submit"),
     daily: (() => {

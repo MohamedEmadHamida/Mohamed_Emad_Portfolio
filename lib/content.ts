@@ -252,6 +252,8 @@ export type FreeAsset = {
   version: string;
   /** Preview in public/free-assets/, e.g. "/free-assets/rbd-fracture-hda.webp". Without it the card shows `art`. */
   image?: string;
+  /** The download itself (uploaded in the dashboard, or a path/link). Without it the card says "Download soon". */
+  file?: string;
   /** Gradient placeholder position and angle, used when there is no image. */
   art: { x: string; y: string; a: string };
 };

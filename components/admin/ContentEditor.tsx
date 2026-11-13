@@ -1,9 +1,12 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import type { Field, SectionDef } from "@/lib/cms-schema";
 import { resetContent, saveContent, type SaveResult } from "@/app/admin/(panel)/content/actions";
 import { vars } from "@/lib/client";
+import { titleFromFileName, uploadFile } from "@/lib/upload-client";
+import type { UploadMode } from "@/lib/uploads";
+import { MediaField, UploadModeContext, useUploadMode } from "./MediaField";
 
 type Val = unknown;
 type Obj = Record<string, Val>;
@@ -47,15 +50,9 @@ function FieldInput({ field, value, onChange, id }: { field: Field; value: Val; 
           ))}
         </select>
       );
-    case "image": {
-      const src = (value as string) ?? "";
-      return (
-        <div className="adm-img">
-          <input id={id} className="adm-input" value={src} placeholder="/projects/my-image.webp" onChange={(e) => onChange(e.target.value)} />
-          {src ? <img src={src} alt="" /> : <span />}
-        </div>
-      );
-    }
+    case "image":
+    case "file":
+      return <MediaField id={id} kind={field.type} folder={field.folder} value={(value as string) ?? ""} onChange={onChange} />;
     case "color": {
       const c = (value as string) || "#ff3b1d";
       return (
@@ -103,15 +100,59 @@ function FieldInput({ field, value, onChange, id }: { field: Field; value: Val; 
         </div>
       );
     }
-    case "list": {
-      const arr = Array.isArray(value) ? (value as Obj[]) : [];
-      const itemField: Field = { k: "", label: "", type: "object", fields: field.item };
+    case "list":
+      return <ListField field={field} value={value} onChange={onChange} id={id} />;
+    case "object":
       return (
+        <div className="adm-group">
+          <ObjectFields field={field} value={value} onChange={onChange} idPrefix={id} />
+        </div>
+      );
+    default:
+      return <input id={id} className="adm-input" value={(value as string) ?? ""} onChange={(e) => onChange(e.target.value)} />;
+  }
+}
+
+/** Repeating items (projects, gallery images, reviews…): collapsible, reorderable, removable. */
+function ListField({ field, value, onChange, id }: { field: Extract<Field, { type: "list" }>; value: Val; onChange: (v: Val) => void; id: string }) {
+  const mode = useUploadMode();
+  const bulkInput = useRef<HTMLInputElement>(null);
+  const [added, setAdded] = useState<number | null>(null);
+  const [bulk, setBulk] = useState<{ done: number; total: number } | null>(null);
+  const [bulkError, setBulkError] = useState("");
+  const arr = Array.isArray(value) ? (value as Obj[]) : [];
+  const itemField: Field = { k: "", label: "", type: "object", fields: field.item };
+
+  // Several images at once: one new item per image, uploaded one after another.
+  async function uploadMany(files: FileList | null) {
+    const b = field.bulkUpload;
+    if (!b || !files?.length) return;
+    setBulkError("");
+    let next = [...arr];
+    const list = [...files];
+    for (let n = 0; n < list.length; n++) {
+      setBulk({ done: n, total: list.length });
+      try {
+        const url = await uploadFile(list[n], { kind: "image", folder: b.folder, mode });
+        const item = blank(itemField) as Obj;
+        item[b.src] = url;
+        if (b.alt) item[b.alt] = titleFromFileName(list[n].name);
+        next = [...next, item];
+        onChange(next);
+      } catch (err) {
+        setBulkError(err instanceof Error ? err.message : "Upload failed.");
+      }
+    }
+    setBulk(null);
+    if (bulkInput.current) bulkInput.current.value = "";
+  }
+
+  return (
         <div className="adm-strings">
           {arr.map((item, i) => {
             const title = (field.titleKey && (item?.[field.titleKey] as string)) || `${field.itemLabel ?? "Item"} ${i + 1}`;
             return (
-              <details className="adm-item" key={i} open={arr.length <= 1}>
+              <details className="adm-item" key={i} open={arr.length <= 1 || i === added}>
                 <summary>
                   <span className="t">{title}</span>
                   <button type="button" className="adm-btn sm ghost" onClick={(e) => { e.preventDefault(); onChange(move(arr, i, -1)); }} aria-label="Move up">↑</button>
@@ -133,23 +174,29 @@ function FieldInput({ field, value, onChange, id }: { field: Field; value: Val; 
               </details>
             );
           })}
-          <div>
-            <button type="button" className="adm-btn sm" onClick={() => onChange([...arr, blank({ k: "", label: "", type: "object", fields: field.item }) as Obj])}>
+          <div className="adm-media-actions">
+            <button
+              type="button"
+              className="adm-btn sm"
+              onClick={() => {
+                setAdded(arr.length);
+                onChange([...arr, blank(itemField) as Obj]);
+              }}
+            >
               + Add {field.itemLabel ?? "item"}
             </button>
+            {field.bulkUpload && (
+              <>
+                <button type="button" className="adm-btn sm" disabled={!!bulk || mode === "none"} onClick={() => bulkInput.current?.click()}>
+                  {bulk ? `Uploading ${bulk.done + 1} of ${bulk.total}…` : "↑ Upload images"}
+                </button>
+                <input ref={bulkInput} type="file" hidden multiple accept="image/webp,image/jpeg,image/png,image/avif,image/gif" onChange={(e) => uploadMany(e.target.files)} />
+              </>
+            )}
           </div>
+          {bulkError && <p className="adm-error">{bulkError}</p>}
         </div>
-      );
-    }
-    case "object":
-      return (
-        <div className="adm-group">
-          <ObjectFields field={field} value={value} onChange={onChange} idPrefix={id} />
-        </div>
-      );
-    default:
-      return <input id={id} className="adm-input" value={(value as string) ?? ""} onChange={(e) => onChange(e.target.value)} />;
-  }
+  );
 }
 
 function ObjectFields({ field, value, onChange, idPrefix }: { field: Extract<Field, { type: "object" }>; value: Val; onChange: (v: Val) => void; idPrefix: string }) {
@@ -173,7 +220,7 @@ function ObjectFields({ field, value, onChange, idPrefix }: { field: Extract<Fie
   );
 }
 
-export function ContentEditor({ def, initial, isSaved }: { def: SectionDef; initial: Val; isSaved: boolean }) {
+export function ContentEditor({ def, initial, isSaved, uploadMode }: { def: SectionDef; initial: Val; isSaved: boolean; uploadMode: UploadMode }) {
   const [value, setValue] = useState<Val>(initial);
   const [dirty, setDirty] = useState(false);
   const [result, setResult] = useState<SaveResult | null>(null);
@@ -200,6 +247,7 @@ export function ContentEditor({ def, initial, isSaved }: { def: SectionDef; init
   };
 
   return (
+    <UploadModeContext.Provider value={uploadMode}>
     <form
       className="adm-editor"
       onSubmit={(e) => {
@@ -253,5 +301,6 @@ export function ContentEditor({ def, initial, isSaved }: { def: SectionDef; init
         )}
       </div>
     </form>
+    </UploadModeContext.Provider>
   );
 }

@@ -1,3 +1,5 @@
+import { downloadHref } from "@/lib/uploads";
+
 export function CvBand({ cvUrl }: { cvUrl: string }) {
   return (
     <section className="cv" aria-label="CV" data-section="cv" data-reveal>
@@ -6,7 +8,7 @@ export function CvBand({ cvUrl }: { cvUrl: string }) {
         <p>Experience, education, awards and tools in one file.</p>
       </div>
       <div className="cta">
-        <a className="btn primary" href={cvUrl} download>
+        <a className="btn primary" href={downloadHref(cvUrl)} download>
           Download CV ↓
         </a>
         <a className="btn" href="#experience">

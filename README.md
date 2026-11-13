@@ -22,6 +22,7 @@ Needs Node 20.9 or newer. Without `MONGODB_URI` the site still runs on the defau
 | `MONGODB_DB` | Database name, default `portfolio` |
 | `ADMIN_PASSWORD` | Password for `/admin` |
 | `SESSION_SECRET` | Random string, 32+ characters. Signs the login cookie and the daily visitor hash |
+| `BLOB_READ_WRITE_TOKEN` | Added by Vercel when you create a Blob store. Without it, uploads go to `public/uploads` (this machine only) |
 | `NEXT_PUBLIC_SITE_URL` | Optional. The public URL once there is a custom domain |
 
 ## Dashboard (`/admin`)
@@ -32,6 +33,10 @@ Needs Node 20.9 or newer. Without `MONGODB_URI` the site still runs on the defau
   city come from Vercel's headers (empty when running locally).
 - **Content**: every section of the site, edited as forms. Saving updates the live site at once.
   "Reset to default" goes back to `lib/content.ts`.
+- **Uploads**: every image field (project covers, galleries, render wall, showreel poster, asset previews)
+  and every file field (free asset downloads, the CV) has an Upload button; you can also drop a file on it.
+  Project galleries have "Upload images" to add several at once. Files go straight from the browser to
+  Vercel Blob (images up to 15MB, downloads up to 500MB).
 - **Settings & accent**: name, email, availability badge and the accent color.
 - "Don't count my visits" stops your own browser from being counted.
 
@@ -54,4 +59,5 @@ Needs Node 20.9 or newer. Without `MONGODB_URI` the site still runs on the defau
    (`0.0.0.0/0`, Vercel has no fixed IPs) and copy the connection string.
 2. In Vercel → Project → Settings → Environment Variables add `MONGODB_URI`, `ADMIN_PASSWORD`
    and `SESSION_SECRET` (a new long random value, not the local one).
-3. Redeploy. The dashboard is at `https://<your-site>/admin`.
+3. In Vercel → Storage → Create → Blob, connect it to the project (this adds `BLOB_READ_WRITE_TOKEN`).
+4. Redeploy. The dashboard is at `https://<your-site>/admin`.

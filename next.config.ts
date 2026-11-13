@@ -6,8 +6,11 @@ const nextConfig: NextConfig = {
   // Without this, Next blocks its dev scripts for other hosts and the page never hydrates.
   allowedDevOrigins: ["192.168.*.*", "10.*.*.*"],
   images: {
-    // Images set in the dashboard can be local (/public) or hosted on Cloudinary (media pipeline, part 5).
-    remotePatterns: [{ protocol: "https", hostname: "res.cloudinary.com" }],
+    // Images set in the dashboard: local (/public, /uploads), uploaded to Vercel Blob, or on Cloudinary.
+    remotePatterns: [
+      { protocol: "https", hostname: "*.public.blob.vercel-storage.com" }, // uploads from the dashboard
+      { protocol: "https", hostname: "res.cloudinary.com" },
+    ],
   },
 };
 

@@ -9,6 +9,7 @@ export const EVENT_NAMES = [
   "wall_open",
   "form_submit",
   "nav",
+  "asset_download",
 ] as const;
 export type EventName = (typeof EVENT_NAMES)[number];
 

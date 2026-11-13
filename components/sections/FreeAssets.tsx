@@ -1,6 +1,7 @@
 import Image from "next/image";
 import type { FreeAsset } from "@/lib/content";
 import { vars } from "@/lib/client";
+import { downloadHref } from "@/lib/uploads";
 import { SectionHead } from "@/components/ui/SectionHead";
 
 /** Free assets grid. Shown on its own page, /free-assets. */
@@ -33,7 +34,13 @@ export function FreeAssets({ items: freeAssets }: { items: FreeAsset[] }) {
             <p>{a.text}</p>
             <div className="asset-meta label">
               <span>{a.version}</span>
-              <span className="soon">Download soon</span>
+              {a.file ? (
+                <a href={downloadHref(a.file)} download data-track="asset_download" data-track-label={a.slug}>
+                  Download ↓
+                </a>
+              ) : (
+                <span className="soon">Download soon</span>
+              )}
             </div>
           </li>
         ))}

@@ -12,3 +12,6 @@ Thumbs.db
 
 # local MongoDB data (npm run db)
 .data/
+
+# files uploaded from the dashboard while developing (production uses Vercel Blob)
+public/uploads/

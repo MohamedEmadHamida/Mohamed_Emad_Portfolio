@@ -8,6 +8,7 @@ import { DailyChart } from "@/components/admin/DailyChart";
 
 const EVENT_LABELS: Record<string, string> = {
   cv_download: "CV downloaded",
+  asset_download: "Free asset downloaded",
   contact_email: "Email link clicked",
   form_submit: "Contact form sent",
   outbound: "Outbound link",
@@ -49,6 +50,7 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
             <Stat label="Avg. time per visit" value={fmtDuration(o.avgSessionMs)} note="tab visible and active" />
             <Stat label="Project pages opened" value={fmtNum(o.projectViews)} />
             <Stat label="CV downloads" value={fmtNum(o.cvDownloads)} />
+            <Stat label="Free asset downloads" value={fmtNum(o.assetDownloads)} />
             <Stat label="Contact clicks" value={fmtNum(o.contactClicks)} note="email link + form" />
           </dl>
 
@@ -202,7 +204,7 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
                           <td className="num">{fmtDuration(s.ms)}</td>
                           <td>
                             {[...new Set(s.events)].map((e) => (
-                              <span key={e} className={e === "cv_download" || e === "contact_email" || e === "form_submit" ? "adm-chip hot" : "adm-chip"}>
+                              <span key={e} className={e === "cv_download" || e === "asset_download" || e === "contact_email" || e === "form_submit" ? "adm-chip hot" : "adm-chip"}>
                                 {EVENT_LABELS[e] ?? e}
                               </span>
                             ))}

@@ -7,6 +7,7 @@ import { BarTable } from "@/components/admin/BarTable";
 
 const EVENT_LABELS: Record<string, string> = {
   cv_download: "Downloaded the CV",
+  asset_download: "Downloaded a free asset",
   contact_email: "Clicked the email link",
   form_submit: "Sent the contact form",
   outbound: "Opened an outside link",
