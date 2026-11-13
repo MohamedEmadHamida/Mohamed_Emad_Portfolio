@@ -26,6 +26,18 @@ export function setIgnored(on: boolean) {
 
 let memorySession: { id: string; last: number } | null = null;
 
+/**
+ * 20 random hex characters. Not crypto.randomUUID(): browsers only expose it on HTTPS and localhost,
+ * so it is missing when the site is opened over the network (http://192.168.x.x:3000).
+ * getRandomValues works everywhere; Math.random is the last resort.
+ */
+function randomId() {
+  const bytes = new Uint8Array(10);
+  if (typeof crypto !== "undefined" && typeof crypto.getRandomValues === "function") crypto.getRandomValues(bytes);
+  else for (let i = 0; i < bytes.length; i++) bytes[i] = Math.floor(Math.random() * 256);
+  return Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
+}
+
 /** Current session id, and whether it was just started (new tab, or 30 min without activity). */
 export function session(): { sid: string; fresh: boolean } {
   const now = Date.now();
@@ -37,7 +49,7 @@ export function session(): { sid: string; fresh: boolean } {
     /* sessionStorage blocked: keep the in-memory one */
   }
   const fresh = !s || now - s.last > SESSION_IDLE_MS;
-  if (fresh || !s) s = { id: crypto.randomUUID().replace(/-/g, "").slice(0, 20), last: now };
+  if (fresh || !s) s = { id: randomId(), last: now };
   s.last = now;
   memorySession = s;
   try {
