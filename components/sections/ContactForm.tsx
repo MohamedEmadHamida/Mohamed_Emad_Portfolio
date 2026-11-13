@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, type CSSProperties, type FormEvent } from "react";
+import { track } from "@/lib/track";
 
 type Field = "name" | "email" | "message";
 
@@ -31,6 +32,7 @@ export function ContactForm({ className, style }: { className?: string; style?: 
       formRef.current?.querySelector<HTMLElement>(`[name="${first}"]`)?.focus();
       setNote("");
     } else {
+      track("form_submit");
       setNote("The form is valid. Nothing was sent, because sending is added with the backend.");
     }
   }

@@ -1,8 +1,8 @@
-import { about } from "@/lib/content";
+import type { SiteContent } from "@/lib/content";
 import { pad2, vars } from "@/lib/client";
 import { SplitTitle } from "@/components/ui/SplitTitle";
 
-export function About() {
+export function About({ about }: { about: SiteContent["about"] }) {
   return (
     <section className="sec about" id="about">
       <div className="grid12">

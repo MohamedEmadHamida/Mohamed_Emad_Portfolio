@@ -22,10 +22,10 @@ Last updated: 2026-11-13
 | 1 | Design system + homepage | Ported to Next.js 16 (App Router, TypeScript). Content in `lib/content.ts`. Prototype kept in `prototype/` |
 | 2 | Projects: grid, filtering, project detail page | Grid + filter on the homepage and on `/projects`. Detail pages at `/projects/[slug]` (soft navigation). Need real write-ups, year, role and more images |
 | 3 | Free assets: listing, asset page, download | Own page at `/free-assets` (removed from the homepage). Three placeholder cards, no asset pages or downloads yet |
-| 4 | Backend + admin login + simple CMS (MongoDB) | Not started |
+| 4 | Backend + admin login + simple CMS (MongoDB) | Done: password login at /admin, every section editable as forms, accent color setting, reset to default. Images are entered as paths (upload comes with part 5) |
 | 5 | Media pipeline (images, video, download files) | Not started |
 | 6 | Contact form sending + messages inbox | Form validates only. Nothing is sent |
-| 7 | Analytics: tracking + dashboard page | Not started |
+| 7 | Analytics: tracking + dashboard page | MVP done: page views, visits, engaged time, time per section, scroll depth, CV/email/outbound/project/render-wall events, referrer, UTM, country/city, device, per-visit timeline. Later: navigation paths, map |
 | 8 | SEO, performance, deploy | Not started. The static prototype can be deployed to Vercel as is |
 
 ## What the homepage prototype contains

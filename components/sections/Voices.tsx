@@ -1,11 +1,11 @@
 "use client";
 
 import { Fragment, useState } from "react";
-import { voices } from "@/lib/content";
+import type { SiteContent } from "@/lib/content";
 import { pad2, vars } from "@/lib/client";
 
 /** Client reviews: pick a name on the left, the quote types in word by word on the right. */
-export function Voices() {
+export function Voices({ voices }: { voices: SiteContent["voices"] }) {
   const [current, setCurrent] = useState(0);
   const v = voices[current];
   const words = `“${v.quote}”`.split(" ");

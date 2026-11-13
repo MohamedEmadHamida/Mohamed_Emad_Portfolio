@@ -1,10 +1,10 @@
-import { site, socials } from "@/lib/content";
+import type { SiteContent } from "@/lib/content";
 import { vars } from "@/lib/client";
 import { SplitTitle } from "@/components/ui/SplitTitle";
 import { ExternalLink } from "@/components/ui/ExternalLink";
 import { ContactForm } from "./ContactForm";
 
-export function Contact() {
+export function Contact({ site, socials }: { site: SiteContent["site"]; socials: SiteContent["socials"] }) {
   const year = new Date().getFullYear();
   return (
     <footer className="contact" id="contact">

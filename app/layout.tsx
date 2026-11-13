@@ -1,10 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Anton, JetBrains_Mono, Onest } from "next/font/google";
-import { site } from "@/lib/content";
-import { Nav } from "@/components/layout/Nav";
-import { SmoothScroll } from "@/components/effects/SmoothScroll";
-import { PageEffects } from "@/components/effects/PageEffects";
-import { AccentSwatch } from "@/components/dev/AccentSwatch";
+import { getContent } from "@/lib/server/content-store";
+import { vars } from "@/lib/client";
 import "./globals.css";
 
 const anton = Anton({ weight: "400", subsets: ["latin"], variable: "--ff-anton", display: "swap" });
@@ -16,27 +13,34 @@ const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ??
   (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "http://localhost:3000");
 
-export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
-  title: { default: `${site.name} · ${site.role}`, template: `%s · ${site.name}` },
-  description: site.description,
-  openGraph: {
-    title: `${site.name} · ${site.role}`,
+export async function generateMetadata(): Promise<Metadata> {
+  const { site, projects } = await getContent();
+  const title = `${site.name} · ${site.role}`;
+  const ogImage = projects[0]?.image;
+  return {
+    metadataBase: new URL(siteUrl),
+    title: { default: title, template: `%s · ${site.name}` },
     description: site.description,
-    type: "website",
-    images: [{ url: "/projects/ferrero-rocher.webp", width: 872, height: 680 }],
-  },
-  twitter: { card: "summary_large_image" },
-};
+    openGraph: { title, description: site.description, type: "website", images: ogImage ? [{ url: ogImage }] : [] },
+    twitter: { card: "summary_large_image" },
+  };
+}
 
 export const viewport: Viewport = {
   themeColor: "#08080a",
   colorScheme: "dark",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+/** Root shell shared by the public site and /admin. The accent color comes from the CMS settings. */
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const { site } = await getContent();
   return (
-    <html lang="en" className={`${anton.variable} ${onest.variable} ${mono.variable}`} suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${anton.variable} ${onest.variable} ${mono.variable}`}
+      style={/^#[0-9a-f]{6}$/i.test(site.accent) ? vars({ "--accent": site.accent }) : undefined}
+      suppressHydrationWarning
+    >
       <head>
         {/* Runs before paint so the reveal styles apply from the first frame.
             Fallback: if the app's JS never runs (blocked, failed to load), drop the preloader
@@ -48,13 +52,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
       </head>
-      <body>
-        <Nav />
-        {children}
-        {process.env.NODE_ENV !== "production" && <AccentSwatch />}
-        <SmoothScroll />
-        <PageEffects />
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

@@ -2,12 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 import { hasBooted, lockScroll, prefersReducedMotion, unlockScroll } from "@/lib/client";
-import { site } from "@/lib/content";
 
 const DURATION = 2000;
 
 /** Counts 0 to 100%, slides away, then starts the hero entrance (the `hero-in` class on <html>). */
-export function Preloader() {
+export function Preloader({ name }: { name: string }) {
   // Skipped when the visit already started (soft navigation back to the homepage).
   const [skip] = useState(hasBooted);
   const [count, setCount] = useState(0);
@@ -59,7 +58,7 @@ export function Preloader() {
   const cls = ["pre", phase !== "count" && "fade", phase === "up" && "up"].filter(Boolean).join(" ");
   return (
     <div className={cls} aria-hidden="true">
-      <div className="pre-brand display">{site.name}</div>
+      <div className="pre-brand display">{name}</div>
       <div className="pre-count display">
         <span>{count}</span>
         <i>%</i>

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { navLinks, site } from "@/lib/content";
+import { navLinks } from "@/lib/content";
 import { vars } from "@/lib/client";
 
 /**
@@ -20,7 +20,7 @@ function NavLink({ href, className, onClick, children }: { href: string; classNa
   return <Link href={href} className={className} onClick={onClick}>{children}</Link>;
 }
 
-export function Nav() {
+export function Nav({ name }: { name: string }) {
   const pathname = usePathname();
   const onHome = pathname === "/";
   const [open, setOpen] = useState(false);
@@ -46,7 +46,7 @@ export function Nav() {
   const isActive = (l: (typeof navLinks)[number]) =>
     onHome ? spied === resolveHref(l.href, true) : !!l.match && pathname.startsWith(l.match);
 
-  const initials = site.name.split(" ").map((p) => p[0]).join("");
+  const initials = name.split(" ").map((p) => p[0]).join("");
   const close = () => setOpen(false);
 
   return (
@@ -55,7 +55,7 @@ export function Nav() {
         <nav aria-label="Main">
           <NavLink className="logo glass" href={onHome ? "#top" : "/"}>
             <span className="mono">{initials}</span>
-            <span className="label">{site.name}</span>
+            <span className="label">{name}</span>
           </NavLink>
           <ul className="links glass">
             {navLinks.map((l) => (

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getContent } from "@/lib/server/content-store";
 import { Work } from "@/components/sections/Work";
 import { Contact } from "@/components/sections/Contact";
 
@@ -7,11 +8,12 @@ export const metadata: Metadata = {
   description: "Product animation, CGI advertising, Houdini FX, modeling and environments by Mohamed Emad.",
 };
 
-export default function ProjectsPage() {
+export default async function ProjectsPage() {
+  const c = await getContent();
   return (
     <main>
-      <Work page />
-      <Contact />
+      <Work projects={c.projects} page />
+      <Contact site={c.site} socials={c.socials} />
     </main>
   );
 }

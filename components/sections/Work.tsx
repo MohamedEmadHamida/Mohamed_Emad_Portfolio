@@ -3,12 +3,12 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { categoryLabel, projectCategories, projects, type ProjectCategory } from "@/lib/content";
+import { categoryLabel, projectCategories, type Project, type ProjectCategory } from "@/lib/content";
 import { pad2, vars } from "@/lib/client";
 import { SectionHead } from "@/components/ui/SectionHead";
 
 /** Project grid with a category filter. `page` renders it as the /projects page (h1, no "All projects" button). */
-export function Work({ page = false }: { page?: boolean }) {
+export function Work({ projects, page = false }: { projects: Project[]; page?: boolean }) {
   const [filter, setFilter] = useState<ProjectCategory | "all">("all");
   const shown = projects.filter((p) => filter === "all" || p.category === filter).length;
 
@@ -23,7 +23,7 @@ export function Work({ page = false }: { page?: boolean }) {
       />
       <div className="chips" role="group" aria-label="Filter projects">
         {projectCategories.map((c) => (
-          <button key={c.id} className="chip" aria-pressed={filter === c.id} onClick={() => setFilter(c.id)}>
+          <button key={c.id} className="chip" aria-pressed={filter === c.id} onClick={() => setFilter(c.id)} data-track="project_filter" data-track-label={c.id}>
             {c.label}
           </button>
         ))}

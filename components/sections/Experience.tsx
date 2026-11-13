@@ -1,5 +1,5 @@
 import { Fragment } from "react";
-import { experience } from "@/lib/content";
+import type { SiteContent } from "@/lib/content";
 import { vars } from "@/lib/client";
 import { SectionHead } from "@/components/ui/SectionHead";
 import { ExternalLink } from "@/components/ui/ExternalLink";
@@ -13,7 +13,7 @@ function Trophy() {
   );
 }
 
-export function Experience() {
+export function Experience({ items: experience }: { items: SiteContent["experience"] }) {
   return (
     <section className="sec" id="experience">
       <SectionHead eyebrow="Experience" title="Where the hours went." maxWidth="14ch" />

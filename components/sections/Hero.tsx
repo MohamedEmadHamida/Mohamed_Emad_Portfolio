@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { heroRoles, showreel, site } from "@/lib/content";
+import type { SiteContent } from "@/lib/content";
 import { vars } from "@/lib/client";
 import { HeroRain } from "@/components/effects/HeroRain";
 import { Timecode } from "@/components/effects/Timecode";
@@ -17,21 +17,23 @@ function NameLine({ text, startMs }: { text: string; startMs: number }) {
   );
 }
 
-export function Hero() {
+type Props = { site: SiteContent["site"]; roles: string[]; showreel: SiteContent["showreel"] };
+
+export function Hero({ site, roles, showreel }: Props) {
   const [first, ...rest] = site.name.split(" ");
   return (
     <section className="hero" id="top">
-      <HeroRain />
+      <HeroRain accent={site.accent} />
       <div className="hero-top">
         <h2 className="roles display">
-          {heroRoles.map((r, i) => (
+          {roles.map((r, i) => (
             <span key={r} style={vars({ "--d": `${0.2 + i * 0.08}s` })}>
               {r}
             </span>
           ))}
         </h2>
         <div className="hero-side">
-          <span className="avail">Available for freelance</span>
+          {site.availability && <span className="avail">{site.availability}</span>}
           <p>{site.description}</p>
           <div className="cta">
             <a className="btn primary" href="#work">

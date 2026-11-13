@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import DataRain, { type DataRainPalette } from "@/components/ui/data-rain";
 import { ACCENT_EVENT } from "@/lib/client";
-import { site } from "@/lib/content";
 
 function hexToRgb(hex: string) {
   const n = parseInt(hex.replace("#", ""), 16);
@@ -28,21 +27,21 @@ function paletteFor(accent: string): DataRainPalette {
   return { calm: "#f3f1ea", mid: mix(accent, "#f3f1ea", 0.45), hot: accent };
 }
 
-function readAccent() {
+function readAccent(fallback: string) {
   const v = getComputedStyle(document.documentElement).getPropertyValue("--accent").trim();
-  return /^#[0-9a-f]{6}$/i.test(v) ? v : site.accent;
+  return /^#[0-9a-f]{6}$/i.test(v) ? v : fallback;
 }
 
 /** Hero backdrop: falling light lines that part around the cursor, colored from --accent. */
-export function HeroRain() {
-  const [palette, setPalette] = useState(() => paletteFor(site.accent));
+export function HeroRain({ accent }: { accent: string }) {
+  const [palette, setPalette] = useState(() => paletteFor(accent));
 
   useEffect(() => {
-    const update = () => setPalette(paletteFor(readAccent()));
+    const update = () => setPalette(paletteFor(readAccent(accent)));
     update();
     addEventListener(ACCENT_EVENT, update);
     return () => removeEventListener(ACCENT_EVENT, update);
-  }, []);
+  }, [accent]);
 
   return <DataRain fullscreen={false} className="hero-rain" palette={palette} />;
 }

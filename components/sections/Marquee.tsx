@@ -1,6 +1,4 @@
-import { disciplines } from "@/lib/content";
-
-export function Marquee() {
+export function Marquee({ items: disciplines }: { items: string[] }) {
   // The list is rendered twice so the -50% loop is seamless.
   const items = [...disciplines, ...disciplines];
   return (

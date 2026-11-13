@@ -1,15 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { accentPresets, site } from "@/lib/content";
+import { accentPresets } from "@/lib/content";
 import { ACCENT_EVENT, vars } from "@/lib/client";
 
 /**
  * Preview tool for the accent color. Rendered only in development (see app/page.tsx);
  * in production the accent comes from the dashboard setting (part 4).
  */
-export function AccentSwatch() {
-  const [current, setCurrent] = useState(site.accent);
+export function AccentSwatch({ initial }: { initial: string }) {
+  const [current, setCurrent] = useState(initial);
 
   function pick(value: string) {
     document.documentElement.style.setProperty("--accent", value);

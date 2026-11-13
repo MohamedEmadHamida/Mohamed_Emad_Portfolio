@@ -1,7 +1,9 @@
-// All homepage content in one place. In part 4 this file is replaced by data from the CMS (MongoDB),
-// so components only read these shapes and never hard-code text.
+// Default content for the whole site. The live site reads content from MongoDB (edited in /admin/content);
+// any section that was never saved there falls back to the values in this file.
+// Components never import content directly: pages load it with getContent() and pass it down as props.
 
 export const site = {
+  availability: "Available for freelance",
   name: "Mohamed Emad",
   role: "3D FX Artist & Programmer",
   location: "Cairo, Egypt",
@@ -108,7 +110,6 @@ export type Project = {
   gallery?: { src: string; alt: string }[];
 };
 
-export const getProject = (slug: string) => projects.find((p) => p.slug === slug);
 
 export const projects: Project[] = [
   {
@@ -269,3 +270,24 @@ export const accentPresets = [
   { label: "Blue", value: "#4d8dff" },
   { label: "Bone", value: "#e9e4d8" },
 ];
+
+/** Everything editable in the CMS. Each key is saved as one document in the "content" collection. */
+export const defaultContent = {
+  site,
+  heroRoles,
+  showreel,
+  disciplines,
+  about,
+  services,
+  projects,
+  renderWall,
+  reviewsUrl,
+  stats,
+  voices,
+  experience,
+  freeAssets,
+  socials,
+};
+
+export type SiteContent = typeof defaultContent;
+export type ContentKey = keyof SiteContent;

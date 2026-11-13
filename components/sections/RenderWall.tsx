@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { renderWall as ITEMS } from "@/lib/content";
+import type { WallItem } from "@/lib/content";
 import { prefersReducedMotion } from "@/lib/client";
+import { track } from "@/lib/track";
 import { SectionHead } from "@/components/ui/SectionHead";
 
 type Pt = { x: number; y: number };
@@ -12,7 +13,7 @@ type Pt = { x: number; y: number };
  * The grid is drawn imperatively every frame (cells are created and removed as they scroll),
  * so React only renders the static shell.
  */
-export function RenderWall() {
+export function RenderWall({ items: ITEMS }: { items: WallItem[] }) {
   const stageRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const spotRef = useRef<HTMLDivElement>(null);
@@ -209,6 +210,7 @@ export function RenderWall() {
 
     function openFocus(c: HTMLElement) {
       const it = ITEMS[+c.dataset.i!], r = c.getBoundingClientRect();
+      track("wall_open", it.title);
       const W = Math.min(cs * 3, innerWidth * 0.86, (innerHeight * 0.8) / 0.72), H = W * 0.72;
       fimg.src = it.src;
       fimg.alt = it.title;
@@ -283,7 +285,7 @@ export function RenderWall() {
       document.body.classList.remove("pg-focused");
       for (const k in cache) cache[k].remove();
     };
-  }, []);
+  }, [ITEMS]);
 
   return (
     <>

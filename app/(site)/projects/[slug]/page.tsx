@@ -2,22 +2,23 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { categoryLabel, getProject, projects } from "@/lib/content";
+import { categoryLabel } from "@/lib/content";
 import { vars } from "@/lib/client";
+import { getContent, getProjectBySlug } from "@/lib/server/content-store";
 import { SplitTitle } from "@/components/ui/SplitTitle";
 import { ExternalLink } from "@/components/ui/ExternalLink";
 import { Contact } from "@/components/sections/Contact";
 
 type Params = { params: Promise<{ slug: string }> };
 
-// Every project page is built at build time; unknown slugs are a 404.
-export const dynamicParams = false;
-export function generateStaticParams() {
-  return projects.map((p) => ({ slug: p.slug }));
+// Known projects are built at build time. Projects added later in the dashboard are rendered
+// on first visit and then cached; unknown slugs are a 404.
+export async function generateStaticParams() {
+  return (await getContent()).projects.map((p) => ({ slug: p.slug }));
 }
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
-  const p = getProject((await params).slug);
+  const p = await getProjectBySlug((await params).slug);
   if (!p) return {};
   return {
     title: p.title,
@@ -35,7 +36,9 @@ function externalLabel(url: string) {
 
 export default async function ProjectPage({ params }: Params) {
   const { slug } = await params;
-  const p = getProject(slug);
+  const c = await getContent();
+  const projects = c.projects;
+  const p = projects.find((x) => x.slug === slug);
   if (!p) notFound();
 
   const index = projects.indexOf(p);
@@ -53,7 +56,7 @@ export default async function ProjectPage({ params }: Params) {
 
   return (
     <main>
-      <article className="sec sub proj">
+      <article className="sec sub proj" data-section="project">
         <Link className="label back" href="/projects">
           ← All projects
         </Link>
@@ -107,7 +110,7 @@ export default async function ProjectPage({ params }: Params) {
       </article>
 
       {next.slug !== p.slug && (
-        <section className="sec next-proj" aria-label="Next project">
+        <section className="sec next-proj" aria-label="Next project" data-section="next-project">
           <Link href={`/projects/${next.slug}`} className="next-link card" data-reveal>
             <span className="label">Next project</span>
             <span className="next-title display">{next.title}</span>
@@ -118,7 +121,7 @@ export default async function ProjectPage({ params }: Params) {
         </section>
       )}
 
-      <Contact />
+      <Contact site={c.site} socials={c.socials} />
     </main>
   );
 }

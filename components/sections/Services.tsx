@@ -1,8 +1,8 @@
-import { services } from "@/lib/content";
+import type { SiteContent } from "@/lib/content";
 import { pad2, vars } from "@/lib/client";
 import { SectionHead } from "@/components/ui/SectionHead";
 
-export function Services() {
+export function Services({ items: services }: { items: SiteContent["services"] }) {
   return (
     <section className="sec" id="services">
       <SectionHead

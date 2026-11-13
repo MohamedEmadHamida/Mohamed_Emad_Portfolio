@@ -1,10 +1,10 @@
 import Image from "next/image";
-import { freeAssets } from "@/lib/content";
+import type { FreeAsset } from "@/lib/content";
 import { vars } from "@/lib/client";
 import { SectionHead } from "@/components/ui/SectionHead";
 
 /** Free assets grid. Shown on its own page, /free-assets. */
-export function FreeAssets() {
+export function FreeAssets({ items: freeAssets }: { items: FreeAsset[] }) {
   return (
     <section className="sec sub" id="assets">
       <SectionHead
