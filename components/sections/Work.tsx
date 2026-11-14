@@ -7,6 +7,8 @@ import { categoryLabel, projectCategories, type Project, type ProjectCategory } 
 import { pad2, vars } from "@/lib/client";
 import { SectionHead } from "@/components/ui/SectionHead";
 
+const HOME_COUNT = 6;
+
 /** Project grid with a category filter. `page` renders it as the /projects page (h1, no "All projects" button). */
 export function Work({ projects, page = false }: { projects: Project[]; page?: boolean }) {
   const [filter, setFilter] = useState<ProjectCategory | "all">("all");
@@ -33,7 +35,8 @@ export function Work({ projects, page = false }: { projects: Project[]; page?: b
           <li
             key={p.slug}
             data-reveal
-            hidden={filter !== "all" && p.category !== filter}
+            // The homepage shows the first HOME_COUNT under "All"; a filter or /projects shows every match.
+            hidden={filter === "all" ? !page && i >= HOME_COUNT : p.category !== filter}
             style={i % 2 ? vars({ "--d": "120ms" }) : undefined}
           >
             <article className="card">

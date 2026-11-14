@@ -15,3 +15,6 @@ Thumbs.db
 
 # files uploaded from the dashboard while developing (production uses Vercel Blob)
 public/uploads/
+
+# Raw media library (source for public/projects and public/gallery), kept local only
+public/AllData/

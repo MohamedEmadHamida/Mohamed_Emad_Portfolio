@@ -355,11 +355,15 @@ form{display:grid;gap:1.75rem}
 .proj-facts div:last-child{border-bottom:1px solid var(--line)}
 .proj-facts dd{font-weight:500}
 .proj-cover{position:relative;margin-top:4rem;aspect-ratio:16/9;overflow:hidden;border-radius:.125rem;background:var(--surface)}
-.proj-cover img,.proj-gallery img{object-fit:cover}
+.proj-cover img{object-fit:cover}
 .proj-body{margin:4rem 0 0 auto;max-width:46rem;display:grid;gap:1.25rem;font-size:1.25rem;line-height:1.55;color:var(--muted)}
-.proj-gallery{margin-top:var(--gutter);display:grid;gap:var(--gutter)}
-@media (min-width:768px){.proj-gallery{grid-template-columns:repeat(2,1fr)}}
-.proj-gallery li{position:relative;aspect-ratio:16/11;overflow:hidden;border-radius:.125rem;background:var(--surface)}
+.proj-film{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#000}
+/* Masonry: two columns on wider screens, each item at its natural shape. */
+.proj-gallery{margin-top:var(--gutter);columns:1;column-gap:var(--gutter)}
+@media (min-width:768px){.proj-gallery{columns:2}}
+.proj-gallery li{break-inside:avoid;margin-bottom:var(--gutter)}
+.proj-gallery img,.proj-gallery video{display:block;width:100%;height:auto;border-radius:.125rem;background:var(--surface)}
+.proj-cap{display:block;margin-top:.6rem;color:var(--muted)}
 .next-proj{padding-top:0}
 .next-link{display:grid;gap:1rem;border-top:1px solid var(--line);padding-top:2.5rem}
 @media (min-width:768px){.next-link{grid-template-columns:1fr 40%;align-items:end}.next-link .label{grid-column:1/-1}}

@@ -8,6 +8,8 @@ import { getContent, getProjectBySlug } from "@/lib/server/content-store";
 import { SplitTitle } from "@/components/ui/SplitTitle";
 import { ExternalLink } from "@/components/ui/ExternalLink";
 import { Contact } from "@/components/sections/Contact";
+import { AutoVideo } from "@/components/ui/AutoVideo";
+import { isVideo } from "@/lib/uploads";
 
 type Params = { params: Promise<{ slug: string }> };
 
@@ -85,7 +87,11 @@ export default async function ProjectPage({ params }: Params) {
         </div>
 
         <figure className="proj-cover" data-reveal>
-          <Image src={p.image} alt={p.alt} fill priority sizes="100vw" />
+          {p.video ? (
+            <AutoVideo className="proj-film" src={p.video} poster={p.image} label={p.alt} controls />
+          ) : (
+            <Image src={p.image} alt={p.alt} fill priority sizes="100vw" />
+          )}
         </figure>
 
         {p.body && p.body.length > 0 && (
@@ -102,7 +108,13 @@ export default async function ProjectPage({ params }: Params) {
           <ul className="proj-gallery">
             {p.gallery.map((g, i) => (
               <li key={g.src} data-reveal style={vars({ "--d": `${(i % 2) * 120}ms` })}>
-                <Image src={g.src} alt={g.alt} fill sizes="(min-width:768px) 50vw, 100vw" />
+                {isVideo(g.src) ? (
+                  <AutoVideo src={g.src} label={g.alt} />
+                ) : (
+                  // Natural size, so tall renders and wide screenshots are shown whole instead of cropped.
+                  <Image src={g.src} alt={g.alt} width={0} height={0} sizes="(min-width:768px) 50vw, 100vw" />
+                )}
+                {g.alt && <span className="label proj-cap">{g.alt}</span>}
               </li>
             ))}
           </ul>
