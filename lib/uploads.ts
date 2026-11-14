@@ -46,7 +46,7 @@ export function vimeoId(url: string): { id: string; hash?: string } | null {
 export const isVimeo = (url: string) => vimeoId(url) !== null;
 
 /** Player URL for a Vimeo link, e.g. muted autoplay on a loop. Null when the link is not Vimeo. */
-export function vimeoEmbedUrl(url: string, o: { autoplay?: boolean; muted?: boolean; loop?: boolean } = {}) {
+export function vimeoEmbedUrl(url: string, o: { autoplay?: boolean; muted?: boolean; loop?: boolean; controls?: boolean } = {}) {
   const v = vimeoId(url);
   if (!v) return null;
   const q = new URLSearchParams({ title: "0", byline: "0", portrait: "0", dnt: "1", autopause: "0" });
@@ -54,6 +54,7 @@ export function vimeoEmbedUrl(url: string, o: { autoplay?: boolean; muted?: bool
   if (o.autoplay) q.set("autoplay", "1");
   if (o.muted) q.set("muted", "1");
   if (o.loop) q.set("loop", "1");
+  if (o.controls === false) q.set("controls", "0");
   return `https://player.vimeo.com/video/${v.id}?${q}`;
 }
 
