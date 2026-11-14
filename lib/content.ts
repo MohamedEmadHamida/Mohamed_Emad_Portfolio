@@ -128,11 +128,12 @@ export const projects: Project[] = [
     alt: "Chocolate hazelnut close-up with gold Ferrero Rocher lettering",
     video: "/projects/ferrero-rocher/film.webm",
     kind: "Personal project",
-    tools: "Houdini · Substance · Blender",
+    tools: "Houdini · Blender · Substance 3D Painter · After Effects · Photoshop",
+    role: "FX simulation, modeling, texturing, lookdev, lighting, rendering and compositing",
     url: "https://www.behance.net/gallery/250743835/Ferrero-Rocher-Commercial-Unofficial-CGI-Remake",
     body: [
-      "An unofficial remake of a Ferrero Rocher commercial. Every shot is full CGI: the hazelnut, the caramel pour, the crumble and the gold foil.",
-      "The caramel is a fluid simulation, the nut pieces are rigid-body simulations, and the shading was built for extreme macro framing.",
+      "An unofficial CGI remake of the original Ferrero Rocher commercial, made as a learning project in product animation, visual storytelling and Houdini FX.",
+      "The caramel is a FLIP fluid simulation and the nut pieces are rigid-body (RBD) simulations, both in Houdini. Modeling, lookdev and rendering were done in Blender, texturing in Substance 3D Painter, and compositing in After Effects.",
     ],
     gallery: g("ferrero-rocher", [
       ["hazelnut-hero.webp", "Hero hazelnut"],
@@ -158,7 +159,7 @@ export const projects: Project[] = [
     tools: "Blender · After Effects · Photoshop",
     body: [
       "Product visuals for Creative Point's smart pool light: a short film and a set of key visuals for social media and the product page.",
-      "Each pool scene was built and lit in Blender, from a white blockout to the final render, so the light's warm, cool and RGB modes read clearly.",
+      "The production went from concept and storyboard to modeling, texturing, animation, rendering and compositing. Modeling, shading, lighting, animation and rendering were done in Blender, compositing and color in After Effects, and final frame polish in Photoshop.",
     ],
     gallery: g("creative-point-smart-led", [
       ["poolside-logo.webp", "Key visual with the brand lockup"],
@@ -187,7 +188,7 @@ export const projects: Project[] = [
     video: "/projects/smart-led-product-film/film.webm",
     kind: "Client work",
     client: "Creative Point",
-    tools: "Blender · After Effects",
+    tools: "Blender · After Effects · Photoshop",
     gallery: g("smart-led-product-film", [
       ["lineup-warm.webp", "Lineup, warm light"],
       ["lineup-cool.webp", "Lineup, lights off"],
@@ -212,9 +213,9 @@ export const projects: Project[] = [
     alt: "Worn brown leather satchel with a tooled flap",
     video: "/projects/leather-satchel/film.webm",
     kind: "Personal project",
-    tools: "Blender · Substance Painter",
+    tools: "Blender · Substance 3D Painter",
     body: [
-      "Modeled in Blender and textured in Substance Painter: tooled floral patterns on the flap, scuffed edges, stitching and aged brass.",
+      "A 3D prop study of a vintage leather satchel, textured in Substance 3D Painter and rendered in Blender: aged leather, worn edges, decorative stitching and embossed floral patterns.",
       "The clay render, normal pass and color variants show the asset before and after texturing.",
     ],
     gallery: g("leather-satchel", [
@@ -385,10 +386,10 @@ export const renderWall: WallItem[] = [
   { title: "Procedural Flower", tag: "Houdini", src: "/gallery/procedural-flower.webp", desc: "Daisies built procedurally in Houdini." },
   { title: "Octopus Bookmark", tag: "3D Printing", src: "/gallery/octopus-bookmark.webm", desc: "Turntable of the octopus from the animal bookmark set." },
   { title: "Crumble Splash", tag: "Product Animation", src: "/gallery/nut-crumble-splash.webp", desc: "Nut crumble hitting the chocolate, rigid-body simulation." },
-  { title: "Sponge Character", tag: "Character", src: "/gallery/sponge-character.webp", desc: "Fan art character render with a soft sponge material." },
+  { title: "Sponge Character", tag: "Character", src: "/gallery/sponge-character.webp", desc: "3D SpongeBob character design, modeled and textured in Blender." },
   { title: "Sunset Pool", tag: "CGI Advertising", src: "/gallery/led-sunset-pool.webp", desc: "Smart LED pool light at sunset." },
   { title: "Gas Station", tag: "Environments", src: "/gallery/gas-station-sunset.webp", desc: "Roadside gas station at sunset." },
-  { title: "Honey Bottle", tag: "Product Animation", src: "/gallery/honey-bottle.webm", desc: "Honey dripping over a glass bottle." },
+  { title: "JAVERNE Perfume", tag: "Product Animation", src: "/gallery/javerne-perfume.webm", desc: "Luxury perfume bottle with a volumetric smoke simulation, made in Blender." },
   { title: "Makkah Clock Tower", tag: "3D Printing", src: "/gallery/makkah-clock-tower.webp", desc: "Printable souvenir of the clock tower." },
   { title: "White Sneaker", tag: "Product Render", src: "/gallery/sneaker-white.webp", desc: "Floating sneaker product shot." },
   { title: "Portrait Study", tag: "Lookdev", src: "/gallery/portrait-clay.webp", desc: "Clay portrait lit in Houdini Karma." },
@@ -398,14 +399,14 @@ export const renderWall: WallItem[] = [
   { title: "Ramadan Lanterns", tag: "3D Printing", src: "/gallery/lanterns.webp", desc: "Two lanterns designed for printing." },
   { title: "Toy Car", tag: "3D Animation", src: "/gallery/toy-car.webp", desc: "A toy car under a single spotlight." },
   { title: "Satchel Close-up", tag: "Modeling & Lookdev", src: "/gallery/satchel-closeup.webp", desc: "Tooled flap and brass buckle." },
-  { title: "Energy Can", tag: "Product Render", src: "/gallery/energy-can.webp", desc: "Pastel energy drink can." },
+  { title: "Stylized Spray Can", tag: "Game Asset", src: "/gallery/spray-can.webp", desc: "Game-ready energy spray can, low and high poly, with Unity-ready textures." },
   { title: "Gas Station at Dusk", tag: "Environments", src: "/gallery/gas-station-dusk.webp", desc: "The gas station under a blue dusk sky." },
   { title: "Flower Macro", tag: "Houdini", src: "/gallery/flower-macro.webp", desc: "Macro of the procedural daisy." },
   { title: "Yellow Sneaker", tag: "Product Render", src: "/gallery/sneaker-yellow.webp", desc: "Sneaker on a yellow backdrop." },
   { title: "The Prophet's Mosque", tag: "3D Printing", src: "/gallery/prophets-mosque.webp", desc: "Printable souvenir with an engraved base." },
-  { title: "Sponge Close-up", tag: "Character", src: "/gallery/sponge-closeup.webp", desc: "Close-up of the sponge character's material." },
+  { title: "Sponge Close-up", tag: "Character", src: "/gallery/sponge-closeup.webp", desc: "Close-up of the SpongeBob model's sponge material." },
   { title: "Diner by Day", tag: "Environments", src: "/gallery/diner-day.webp", desc: "The diner in daylight." },
-  { title: "Forest House", tag: "Environments", src: "/gallery/forest-house.webp", desc: "A veranda house among pines in dappled light." },
+  { title: "Victorian House", tag: "Architecture", src: "/gallery/forest-house.webp", desc: "A Victorian-style house in a forest, modeled and rendered in Blender." },
 ];
 
 export const reviewsUrl = "https://mostaql.com/u/Mohamed_Emad_1/reviews";
