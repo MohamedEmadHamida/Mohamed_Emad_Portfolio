@@ -49,7 +49,7 @@ export const isVimeo = (url: string) => vimeoId(url) !== null;
 export function vimeoEmbedUrl(url: string, o: { autoplay?: boolean; muted?: boolean; loop?: boolean; controls?: boolean } = {}) {
   const v = vimeoId(url);
   if (!v) return null;
-  const q = new URLSearchParams({ title: "0", byline: "0", portrait: "0", dnt: "1", autopause: "0" });
+  const q = new URLSearchParams({ api: "1", title: "0", byline: "0", portrait: "0", dnt: "1", autopause: "0" });
   if (v.hash) q.set("h", v.hash);
   if (o.autoplay) q.set("autoplay", "1");
   if (o.muted) q.set("muted", "1");

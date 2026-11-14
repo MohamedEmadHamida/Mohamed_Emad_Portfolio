@@ -57,6 +57,10 @@ export function RenderWall({ items: ITEMS }: { items: WallItem[] }) {
     };
 
     /** Fills a thumb with the item's picture, or a muted looping video when the item is a video file. */
+    /** Resized copy from Next's image optimizer; videos and unknown hosts are used as they are. */
+    const sized = (src: string, w: number) => (isVideo(src) ? src : `/_next/image?url=${encodeURIComponent(src)}&w=${w}&q=75`);
+    const THUMB_W = devicePixelRatio > 1.5 ? 640 : 384;
+
     function setThumb(thumb: HTMLElement, src: string) {
       const old = thumb.querySelector("video");
       if (isVideo(src)) {
@@ -64,27 +68,40 @@ export function RenderWall({ items: ITEMS }: { items: WallItem[] }) {
         if (old && old.getAttribute("src") === src) return;
         old?.remove();
         const v = document.createElement("video");
-        Object.assign(v, { muted: true, loop: true, playsInline: true, autoplay: !reduce, preload: "auto" });
+        Object.assign(v, { muted: true, loop: true, playsInline: true, preload: "metadata" });
         v.setAttribute("muted", "");
         v.setAttribute("playsinline", "");
         v.addEventListener("loadedmetadata", () => learn(src, v.videoWidth, v.videoHeight), { once: true });
         v.src = src;
         thumb.append(v);
-        if (!reduce && visible) v.play().catch(() => {});
+        thumb.dataset.playing = "";
       } else {
         old?.remove();
-        thumb.style.backgroundImage = `url(${src})`;
+        thumb.style.backgroundImage = `url(${sized(src, THUMB_W)})`;
         if (!(src in ratios)) {
           const im = new Image();
           im.onload = () => learn(src, im.naturalWidth, im.naturalHeight);
-          im.src = src;
+          im.src = sized(src, THUMB_W);
         }
       }
     }
-    /** Videos only play while the wall is on screen. */
+    /**
+     * Only clips near the middle of the wall play, and only while the wall is on screen;
+     * the copies towards the edges hold still, so a dozen 1080p clips are not decoded at once.
+     */
     function playVideos(on: boolean) {
-      if (reduce) return;
-      grid.querySelectorAll("video").forEach((v) => (on ? v.play().catch(() => {}) : v.pause()));
+      if (reduce || on) return; // turning on happens per cell in render()
+      grid.querySelectorAll<HTMLVideoElement>("video").forEach((v) => { v.pause(); (v.parentElement as HTMLElement).dataset.playing = ""; });
+    }
+    function playIfNear(el: HTMLElement, near: boolean) {
+      const thumb = el.firstElementChild as HTMLElement;
+      const v = thumb.lastElementChild;
+      if (!(v instanceof HTMLVideoElement) || reduce) return;
+      const want = near && visible ? "1" : "";
+      if (thumb.dataset.playing === want) return;
+      thumb.dataset.playing = want;
+      if (want) v.play().catch(() => {});
+      else v.pause();
     }
 
     function cell(key: string) {
@@ -118,6 +135,8 @@ export function RenderWall({ items: ITEMS }: { items: WallItem[] }) {
           el.style.width = el.style.height = cs + "px";
           el.style.transform = `translate3d(0,0,${z}px) rotateY(${(-ang * 180) / Math.PI}deg) scale(${1 - CFG.edgeFade * edge * edge})`;
           el.style.opacity = String(1 - 0.4 * edge * CFG.arcAmount);
+          const dy = (T + cs / 2 - vp.h / 2) / (vp.h / 2);
+          playIfNear(el, edge < 0.6 && Math.abs(dy) < 0.75);
           if (el.dataset.i !== String(idx)) {
             el.dataset.i = String(idx);
             const it = ITEMS[idx];
@@ -268,7 +287,7 @@ export function RenderWall({ items: ITEMS }: { items: WallItem[] }) {
         fvid.removeAttribute("src");
         fimg.hidden = false;
         fimg.onload = () => reshape(it.src, fimg.naturalWidth, fimg.naturalHeight);
-        fimg.src = it.src;
+        fimg.src = sized(it.src, 1920);
         fimg.alt = it.title;
       }
       ft.textContent = fy.textContent = fd.textContent = "";
