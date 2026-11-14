@@ -21,11 +21,22 @@ async function load(): Promise<SiteContent> {
   }
 }
 
+/** Short fingerprint of the defaults. Part of the cache key, so a deploy that changes lib/content.ts starts a fresh cache. */
+function fingerprint(s: string) {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 0x01000193);
+  return (h >>> 0).toString(36);
+}
+
 /**
  * Site content: saved CMS sections from MongoDB, defaults from lib/content.ts for the rest.
- * Cached across requests and deployments; a save in the dashboard invalidates the "content" tag.
+ * Cached across requests (and deployments, on Vercel); a save in the dashboard invalidates the
+ * "content" tag, and new defaults change the key.
  */
-export const getContent = unstable_cache(load, ["site-content-v1"], { tags: [CONTENT_TAG], revalidate: 3600 });
+export const getContent = unstable_cache(load, ["site-content", fingerprint(JSON.stringify(defaultContent))], {
+  tags: [CONTENT_TAG],
+  revalidate: 3600,
+});
 
 export async function getProjectBySlug(slug: string) {
   return (await getContent()).projects.find((p) => p.slug === slug);

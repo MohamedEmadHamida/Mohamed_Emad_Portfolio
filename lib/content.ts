@@ -3,7 +3,7 @@
 // Components never import content directly: pages load it with getContent() and pass it down as props.
 
 export const site = {
-  availability: "Available for freelance",
+  availability: "Available for Freelance, Part-Time & Full-Time",
   name: "Mohamed Emad",
   role: "3D FX Artist & Programmer",
   location: "Cairo, Egypt",
