@@ -46,6 +46,15 @@ export function RenderWall({ items: ITEMS }: { items: WallItem[] }) {
     let rx = 0, ry = 0, trx = 0, tryY = 0;
     const timers: number[] = [];
     const cache: Record<string, HTMLDivElement> = {};
+    /** Width / height of each frame, learned as thumbs load, so the focus card opens at the right shape. */
+    const ratios: Record<string, number> = {};
+    const learn = (src: string, w: number, h: number) => { if (w && h) ratios[src] = w / h; };
+    /** Largest box with this shape that fits the screen. */
+    const fit = (r: number) => {
+      const maxW = Math.min(innerWidth * 0.9, 1200), maxH = innerHeight * 0.82;
+      const W = Math.min(maxW, maxH * r);
+      return { W, H: W / r };
+    };
 
     /** Fills a thumb with the item's picture, or a muted looping video when the item is a video file. */
     function setThumb(thumb: HTMLElement, src: string) {
@@ -58,12 +67,18 @@ export function RenderWall({ items: ITEMS }: { items: WallItem[] }) {
         Object.assign(v, { muted: true, loop: true, playsInline: true, autoplay: !reduce, preload: "auto" });
         v.setAttribute("muted", "");
         v.setAttribute("playsinline", "");
+        v.addEventListener("loadedmetadata", () => learn(src, v.videoWidth, v.videoHeight), { once: true });
         v.src = src;
         thumb.append(v);
         if (!reduce && visible) v.play().catch(() => {});
       } else {
         old?.remove();
         thumb.style.backgroundImage = `url(${src})`;
+        if (!(src in ratios)) {
+          const im = new Image();
+          im.onload = () => learn(src, im.naturalWidth, im.naturalHeight);
+          im.src = src;
+        }
       }
     }
     /** Videos only play while the wall is on screen. */
@@ -238,11 +253,12 @@ export function RenderWall({ items: ITEMS }: { items: WallItem[] }) {
     function openFocus(c: HTMLElement) {
       const it = ITEMS[+c.dataset.i!], r = c.getBoundingClientRect();
       track("wall_open", it.title);
-      const W = Math.min(cs * 3, innerWidth * 0.86, (innerHeight * 0.8) / 0.72), H = W * 0.72;
+      const { W, H } = fit(ratios[it.src] ?? 16 / 9);
       if (isVideo(it.src)) {
         fimg.hidden = true;
         fimg.removeAttribute("src");
         fvid.hidden = false;
+        fvid.onloadedmetadata = () => reshape(it.src, fvid.videoWidth, fvid.videoHeight);
         fvid.src = it.src;
         fvid.setAttribute("aria-label", it.title);
         if (!reduce) fvid.play().catch(() => {});
@@ -251,6 +267,7 @@ export function RenderWall({ items: ITEMS }: { items: WallItem[] }) {
         fvid.pause();
         fvid.removeAttribute("src");
         fimg.hidden = false;
+        fimg.onload = () => reshape(it.src, fimg.naturalWidth, fimg.naturalHeight);
         fimg.src = it.src;
         fimg.alt = it.title;
       }
@@ -268,6 +285,17 @@ export function RenderWall({ items: ITEMS }: { items: WallItem[] }) {
         type(it);
         if (!reduce) { rx = ry = trx = tryY = 0; tilting = true; card.style.transition = "opacity .3s ease"; tiltRaf = requestAnimationFrame(tilt); }
       }, 620));
+    }
+
+    /** Corrects the card's shape when the frame's size was not known when it opened. */
+    function reshape(src: string, w: number, h: number) {
+      const known = ratios[src];
+      learn(src, w, h);
+      if (!focusOn || !w || !h || (known && Math.abs(known - w / h) < 0.01)) return;
+      const { W, H } = fit(w / h);
+      // Added to whatever is running, so an opening animation in progress is not cut short.
+      if (!card.style.transition.includes("width")) card.style.transition += ",width .35s ease,height .35s ease";
+      Object.assign(card.style, { width: W + "px", height: H + "px" });
     }
 
     function closeFocus() {
