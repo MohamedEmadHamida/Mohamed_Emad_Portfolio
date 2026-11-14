@@ -15,7 +15,8 @@ export async function POST(request: Request) {
 
   const form = await request.formData();
   const file = form.get("file");
-  const kind: UploadKind = form.get("kind") === "file" ? "file" : "image";
+  const k = form.get("kind");
+  const kind: UploadKind = k === "file" || k === "media" ? k : "image";
   const folder = String(form.get("folder") ?? "misc");
   if (!(file instanceof File)) return NextResponse.json({ error: "No file." }, { status: 400 });
   if (!(UPLOAD_FOLDERS as readonly string[]).includes(folder)) return NextResponse.json({ error: "Unknown folder." }, { status: 400 });

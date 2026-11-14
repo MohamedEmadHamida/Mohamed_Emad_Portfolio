@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useRef, useState, type DragEvent } from "react";
 import { uploadFile } from "@/lib/upload-client";
-import { UPLOAD_RULES, type UploadFolder, type UploadKind, type UploadMode } from "@/lib/uploads";
+import { isVideo, UPLOAD_RULES, type UploadFolder, type UploadKind, type UploadMode } from "@/lib/uploads";
 
 /** Set once by the editor from the server: where uploads go on this deployment. */
 export const UploadModeContext = createContext<UploadMode>("none");
@@ -54,14 +54,18 @@ export function MediaField({ id, kind, folder, value, onChange }: Props) {
       onDrop={drop}
     >
       <div className="adm-media-row">
-        {kind === "image" &&
+        {kind !== "file" &&
           (value ? (
-            <img className="adm-media-thumb" src={value} alt="" />
+            isVideo(value) ? (
+              <video className="adm-media-thumb" src={value} muted loop autoPlay playsInline />
+            ) : (
+              <img className="adm-media-thumb" src={value} alt="" />
+            )
           ) : (
             <span className="adm-media-thumb empty">No image</span>
           ))}
         <div className="adm-media-main">
-          <input id={id} className="adm-input" value={value} placeholder={kind === "image" ? "Upload, drop, or paste a path" : "Upload, drop, or paste a link"} onChange={(e) => onChange(e.target.value)} />
+          <input id={id} className="adm-input" value={value} placeholder={kind !== "file" ? "Upload, drop, or paste a path" : "Upload, drop, or paste a link"} onChange={(e) => onChange(e.target.value)} />
           <div className="adm-media-actions">
             <button type="button" className="adm-btn sm" disabled={progress !== null || mode === "none"} onClick={() => input.current?.click()}>
               {progress !== null ? `Uploading… ${progress}%` : value ? "Replace" : "Upload"}

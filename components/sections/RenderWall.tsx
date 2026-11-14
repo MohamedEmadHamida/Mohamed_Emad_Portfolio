@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import type { WallItem } from "@/lib/content";
+import { isVideo } from "@/lib/uploads";
 import { prefersReducedMotion } from "@/lib/client";
 import { track } from "@/lib/track";
 import { SectionHead } from "@/components/ui/SectionHead";
@@ -20,6 +21,7 @@ export function RenderWall({ items: ITEMS }: { items: WallItem[] }) {
   const dimRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
+  const vidRef = useRef<HTMLVideoElement>(null);
   const titleRef = useRef<HTMLSpanElement>(null);
   const tagRef = useRef<HTMLSpanElement>(null);
   const descRef = useRef<HTMLSpanElement>(null);
@@ -27,7 +29,7 @@ export function RenderWall({ items: ITEMS }: { items: WallItem[] }) {
 
   useEffect(() => {
     const stage = stageRef.current!, grid = gridRef.current!, spot = spotRef.current!;
-    const dim = dimRef.current!, card = cardRef.current!, fimg = imgRef.current!;
+    const dim = dimRef.current!, card = cardRef.current!, fimg = imgRef.current!, fvid = vidRef.current!;
     const ft = titleRef.current!, fy = tagRef.current!, fd = descRef.current!, caret = caretRef.current!;
     const reduce = prefersReducedMotion();
     const small = matchMedia("(max-width:640px)").matches;
@@ -44,6 +46,31 @@ export function RenderWall({ items: ITEMS }: { items: WallItem[] }) {
     let rx = 0, ry = 0, trx = 0, tryY = 0;
     const timers: number[] = [];
     const cache: Record<string, HTMLDivElement> = {};
+
+    /** Fills a thumb with the item's picture, or a muted looping video when the item is a video file. */
+    function setThumb(thumb: HTMLElement, src: string) {
+      const old = thumb.querySelector("video");
+      if (isVideo(src)) {
+        thumb.style.backgroundImage = "";
+        if (old && old.getAttribute("src") === src) return;
+        old?.remove();
+        const v = document.createElement("video");
+        Object.assign(v, { muted: true, loop: true, playsInline: true, autoplay: !reduce, preload: "auto" });
+        v.setAttribute("muted", "");
+        v.setAttribute("playsinline", "");
+        v.src = src;
+        thumb.append(v);
+        if (!reduce && visible) v.play().catch(() => {});
+      } else {
+        old?.remove();
+        thumb.style.backgroundImage = `url(${src})`;
+      }
+    }
+    /** Videos only play while the wall is on screen. */
+    function playVideos(on: boolean) {
+      if (reduce) return;
+      grid.querySelectorAll("video").forEach((v) => (on ? v.play().catch(() => {}) : v.pause()));
+    }
 
     function cell(key: string) {
       let el = cache[key];
@@ -79,7 +106,7 @@ export function RenderWall({ items: ITEMS }: { items: WallItem[] }) {
           if (el.dataset.i !== String(idx)) {
             el.dataset.i = String(idx);
             const it = ITEMS[idx];
-            (el.firstElementChild as HTMLElement).style.backgroundImage = `url(${it.src})`;
+            setThumb(el.firstElementChild as HTMLElement, it.src);
             const s = el.lastElementChild!.children;
             s[0].textContent = it.title;
             s[1].textContent = it.tag.split(" ")[0];
@@ -109,8 +136,8 @@ export function RenderWall({ items: ITEMS }: { items: WallItem[] }) {
 
     const io = new IntersectionObserver((es) => {
       const v = es[0].isIntersecting;
-      if (v && !visible) { visible = true; vp = { w: stage.clientWidth, h: stage.clientHeight }; lastT = performance.now(); raf = requestAnimationFrame(tick); }
-      else if (!v) { visible = false; cancelAnimationFrame(raf); }
+      if (v && !visible) { visible = true; vp = { w: stage.clientWidth, h: stage.clientHeight }; lastT = performance.now(); raf = requestAnimationFrame(tick); playVideos(true); }
+      else if (!v) { visible = false; cancelAnimationFrame(raf); playVideos(false); }
     });
     io.observe(stage);
     const onResize = () => { vp = { w: stage.clientWidth, h: stage.clientHeight }; };
@@ -212,8 +239,21 @@ export function RenderWall({ items: ITEMS }: { items: WallItem[] }) {
       const it = ITEMS[+c.dataset.i!], r = c.getBoundingClientRect();
       track("wall_open", it.title);
       const W = Math.min(cs * 3, innerWidth * 0.86, (innerHeight * 0.8) / 0.72), H = W * 0.72;
-      fimg.src = it.src;
-      fimg.alt = it.title;
+      if (isVideo(it.src)) {
+        fimg.hidden = true;
+        fimg.removeAttribute("src");
+        fvid.hidden = false;
+        fvid.src = it.src;
+        fvid.setAttribute("aria-label", it.title);
+        if (!reduce) fvid.play().catch(() => {});
+      } else {
+        fvid.hidden = true;
+        fvid.pause();
+        fvid.removeAttribute("src");
+        fimg.hidden = false;
+        fimg.src = it.src;
+        fimg.alt = it.title;
+      }
       ft.textContent = fy.textContent = fd.textContent = "";
       Object.assign(card.style, { width: W + "px", height: H + "px", transition: "none", left: r.left + r.width / 2 + "px", top: r.top + r.height / 2 + "px", transform: `translate(-50%,-50%) scale(${r.width / W})`, opacity: "0" });
       void card.offsetHeight;
@@ -242,7 +282,7 @@ export function RenderWall({ items: ITEMS }: { items: WallItem[] }) {
       Object.assign(card.style, { left: l + "px", top: t + "px", transform: `translate(-50%,-50%) scale(${s})`, opacity: "0" });
       dim.classList.remove("on");
       document.body.classList.remove("pg-focused");
-      timers.push(window.setTimeout(() => card.classList.remove("on"), 450));
+      timers.push(window.setTimeout(() => { card.classList.remove("on"); fvid.pause(); }, 450));
       focusOn = false;
       fcell = null;
     }
@@ -308,6 +348,7 @@ export function RenderWall({ items: ITEMS }: { items: WallItem[] }) {
       <div id="pg-focus-card" ref={cardRef}>
         {/* Plain <img>: its src is set imperatively when a frame opens. */}
         <img id="pg-focus-img" ref={imgRef} alt="" />
+        <video id="pg-focus-video" ref={vidRef} muted loop playsInline hidden />
         <div className="pg-cap">
           <div className="pg-cap-head">
             <span ref={titleRef} />

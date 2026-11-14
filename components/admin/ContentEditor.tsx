@@ -51,6 +51,7 @@ function FieldInput({ field, value, onChange, id }: { field: Field; value: Val; 
         </select>
       );
     case "image":
+    case "media":
     case "file":
       return <MediaField id={id} kind={field.type} folder={field.folder} value={(value as string) ?? ""} onChange={onChange} />;
     case "color": {

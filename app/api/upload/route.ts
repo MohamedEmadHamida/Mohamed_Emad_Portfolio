@@ -19,7 +19,7 @@ export async function POST(request: Request) {
       onBeforeGenerateToken: async (pathname, clientPayload) => {
         if (!(await isAdmin())) throw new Error("Not logged in.");
         const { kind } = JSON.parse(clientPayload || "{}") as { kind?: UploadKind };
-        const rules = UPLOAD_RULES[kind === "file" ? "file" : "image"];
+        const rules = UPLOAD_RULES[kind === "file" || kind === "media" ? kind : "image"];
         const folder = pathname.split("/")[0];
         if (!(UPLOAD_FOLDERS as readonly string[]).includes(folder)) throw new Error("Unknown upload folder.");
         return {

@@ -164,6 +164,7 @@ export type WallItem = { title: string; tag: string; src: string; desc: string }
 
 export const renderWall: WallItem[] = [
   { title: "Ferrero Rocher", tag: "Product Animation", src: "/gallery/ferrero-rocher.webp", desc: "CGI remake. Fluids, debris and macro texturing built in Houdini." },
+  { title: "Toy", tag: "3D Animation", src: "/gallery/toy.webm", desc: "Looping toy animation, modeled, animated and rendered in 3D." },
   { title: "Smart LED Poolside", tag: "CGI Advertising", src: "/gallery/creative-point-led-poolside.webp", desc: "Creative Point pool light, modeled, lit and rendered in Blender." },
   { title: "Smart LED Studio", tag: "CGI Advertising", src: "/gallery/creative-point-led-studio.webp", desc: "Studio shot of the light with the brand lockup." },
   { title: "Smart LED Macro", tag: "CGI Advertising", src: "/gallery/creative-point-led-macro.webp", desc: "Macro detail of the lens and the embossed mark." },

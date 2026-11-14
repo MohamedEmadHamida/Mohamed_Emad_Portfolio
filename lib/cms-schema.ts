@@ -6,8 +6,8 @@ import type { UploadFolder } from "./uploads";
 type Base = { k: string; label: string; help?: string; optional?: boolean };
 export type Field =
   | (Base & { type: "text" | "textarea" | "url" | "slug"; max?: number })
-  /** image: picture shown on the site. file: a download (CV, HDA, zip…). Both can be uploaded or typed as a path/URL. */
-  | (Base & { type: "image" | "file"; folder: UploadFolder })
+  /** image: picture shown on the site. media: picture or short looping video. file: a download (CV, HDA, zip…). All can be uploaded or typed as a path/URL. */
+  | (Base & { type: "image" | "media" | "file"; folder: UploadFolder })
   | (Base & { type: "color"; presets?: { label: string; value: string }[] })
   | (Base & { type: "select"; options: { value: string; label: string }[] })
   | (Base & { type: "strings"; multiline?: boolean; itemLabel?: string })
@@ -112,7 +112,7 @@ export const SECTIONS: SectionDef[] = [
       type: "list",
       titleKey: "title",
       itemLabel: "frame",
-      item: [t("title", "Title"), t("tag", "Tag"), { k: "src", label: "Image", type: "image", folder: "gallery" }, t("desc", "One line")],
+      item: [t("title", "Title"), t("tag", "Tag"), { k: "src", label: "Image or video", type: "media", folder: "gallery", help: "A picture, or a short webm/mp4 that plays muted on a loop." }, t("desc", "One line")],
     },
   },
   {
@@ -231,6 +231,7 @@ export function sanitize(field: Field, value: unknown, path: string, errors: str
     case "textarea":
     case "url":
     case "image":
+    case "media":
     case "file":
     case "slug": {
       const s = typeof value === "string" ? value.trim() : "";
@@ -239,6 +240,7 @@ export function sanitize(field: Field, value: unknown, path: string, errors: str
       if (s.length > max) return need(`too long (max ${max} characters)`);
       if (field.type === "url" && !URL_RE.test(s)) return need("must start with https://, / or mailto:");
       if (field.type === "image" && !IMAGE_RE.test(s)) return need("upload an image, or use a path starting with /");
+      if (field.type === "media" && !IMAGE_RE.test(s)) return need("upload an image or a video, or use a path starting with /");
       if (field.type === "file" && !FILE_RE.test(s)) return need("upload a file, or use a path starting with / or an https:// link");
       if (field.type === "slug" && !SLUG_RE.test(s)) return need("use lowercase letters, numbers and dashes only");
       return s;
