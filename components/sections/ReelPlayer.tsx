@@ -28,6 +28,7 @@ export function ReelPlayer({ src, poster, title }: Props) {
   const frame = useRef<HTMLIFrameElement>(null);
   const scrub = useRef<HTMLInputElement>(null);
   const [full, setFull] = useState(false);
+  const [ready, setReady] = useState(false);
   const vimeo = vimeoEmbedUrl(src, { autoplay: true, muted: true, loop: true, controls: false });
 
   const vimeoCall = (method: string, value?: unknown) =>
@@ -38,6 +39,9 @@ export function ReelPlayer({ src, poster, title }: Props) {
     const reduce = prefersReducedMotion();
     let onScreen = true, dragging = false, duration = 0, raf = 0;
     const retries: number[] = [];
+    const onReady = () => setReady(true);
+    if ((window as Window & { __reelReady?: boolean }).__reelReady) onReady();
+    window.addEventListener(REEL_READY, onReady);
 
     const play = () => (v ? v.play().catch(() => {}) : vimeoCall("play"));
     const pause = () => (v ? v.pause() : vimeoCall("pause"));
@@ -117,6 +121,7 @@ export function ReelPlayer({ src, poster, title }: Props) {
     return () => {
       io.disconnect();
       retries.forEach(clearTimeout);
+      window.removeEventListener(REEL_READY, onReady);
       cancelAnimationFrame(raf);
       document.removeEventListener("visibilitychange", sync);
       document.removeEventListener("fullscreenchange", onFull);
@@ -146,7 +151,7 @@ export function ReelPlayer({ src, poster, title }: Props) {
 
   return (
     <>
-      <div ref={box} className={full ? "reel-media is-full" : "reel-media"}>
+      <div ref={box} className={["reel-media", full && "is-full", ready && "is-ready"].filter(Boolean).join(" ")}>
         {vimeo ? (
           <iframe ref={frame} src={vimeo} title={title} allow="autoplay; fullscreen; picture-in-picture" allowFullScreen tabIndex={-1} onLoad={() => setTimeout(markReady, 1500)} />
         ) : (
