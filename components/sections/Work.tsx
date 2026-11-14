@@ -41,7 +41,7 @@ export function Work({ projects, page = false }: { projects: Project[]; page?: b
           >
             <article className="card">
               <div className="ph">
-                <Image className="ph-art ph-img" src={p.image} alt={p.alt} fill sizes="(min-width:768px) 50vw, 100vw" />
+                <Image className="ph-art ph-img" src={p.image} alt={p.alt} fill sizes="(min-width:768px) 50vw, 100vw" quality={90} />
               </div>
               <div className="card-row">
                 <div>

@@ -28,10 +28,12 @@ export const navLinks: { href: string; label: string; match?: string }[] = [
 export const heroRoles = ["3D FX Artist", "Programmer", "Product Animation", "CGI Advertising"];
 
 export const showreel = {
+  /** A Vimeo link or an uploaded webm/mp4. Plays muted on a loop; empty shows the poster only. */
+  video: "https://vimeo.com/1239225361" as string,
   poster: "/projects/creative-point-smart-led/cover.webp",
   label: "Showreel 2026",
   format: "1920 × 1080 · 24 fps",
-  status: "In production",
+  status: "Now playing",
 };
 
 export const disciplines = [

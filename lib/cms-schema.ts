@@ -1,7 +1,7 @@
 // Describes every editable section of the site. The dashboard builds its forms from this,
 // and the server validates saves against it, so the two can never disagree.
 import { accentPresets, projectCategories, type ContentKey } from "./content";
-import type { UploadFolder } from "./uploads";
+import { isVimeo, type UploadFolder } from "./uploads";
 
 type Base = { k: string; label: string; help?: string; optional?: boolean };
 export type Field =
@@ -57,7 +57,8 @@ export const SECTIONS: SectionDef[] = [
       label: "",
       type: "object",
       fields: [
-        { k: "poster", label: "Poster image", type: "image", folder: "gallery" },
+        { k: "video", label: "Showreel video", type: "media", folder: "gallery", optional: true, help: "Paste a Vimeo link, or upload a webm/mp4. It plays muted on a loop. Leave empty to show the poster only." },
+        { k: "poster", label: "Poster image", type: "image", folder: "gallery", help: "Shown while the video loads." },
         t("label", "Label (top left)"),
         t("format", "Format (top right)"),
         t("status", "Status (bottom left)"),
@@ -241,7 +242,7 @@ export function sanitize(field: Field, value: unknown, path: string, errors: str
       if (s.length > max) return need(`too long (max ${max} characters)`);
       if (field.type === "url" && !URL_RE.test(s)) return need("must start with https://, / or mailto:");
       if (field.type === "image" && !IMAGE_RE.test(s)) return need("upload an image, or use a path starting with /");
-      if (field.type === "media" && !IMAGE_RE.test(s)) return need("upload an image or a video, or use a path starting with /");
+      if (field.type === "media" && !IMAGE_RE.test(s) && !isVimeo(s)) return need("upload an image or a video, or use a path starting with /");
       if (field.type === "file" && !FILE_RE.test(s)) return need("upload a file, or use a path starting with / or an https:// link");
       if (field.type === "slug" && !SLUG_RE.test(s)) return need("use lowercase letters, numbers and dashes only");
       return s;

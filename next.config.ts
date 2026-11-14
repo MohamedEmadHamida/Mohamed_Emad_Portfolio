@@ -6,6 +6,8 @@ const nextConfig: NextConfig = {
   // Without this, Next blocks its dev scripts for other hosts and the page never hydrates.
   allowedDevOrigins: ["192.168.*.*", "10.*.*.*"],
   images: {
+    // 90 is used for project covers and the showreel poster, so large renders stay crisp.
+    qualities: [75, 90],
     // Images set in the dashboard: local (/public, /uploads), uploaded to Vercel Blob, or on Cloudinary.
     remotePatterns: [
       { protocol: "https", hostname: "*.public.blob.vercel-storage.com" }, // uploads from the dashboard

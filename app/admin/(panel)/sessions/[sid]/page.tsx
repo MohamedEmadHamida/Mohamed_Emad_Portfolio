@@ -14,6 +14,7 @@ const EVENT_LABELS: Record<string, string> = {
   project_click: "Clicked a project",
   project_filter: "Filtered projects",
   wall_open: "Opened a render wall frame",
+  reel_fullscreen: "Watched the showreel fullscreen",
 };
 
 /** One visit, in order: pages opened, time on each, which sections held their attention, and what they clicked. */

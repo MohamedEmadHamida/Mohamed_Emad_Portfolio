@@ -15,6 +15,7 @@ const EVENT_LABELS: Record<string, string> = {
   project_click: "Project card clicked",
   project_filter: "Project filter used",
   wall_open: "Render wall frame opened",
+  reel_fullscreen: "Showreel watched fullscreen",
 };
 
 export default async function AnalyticsPage({ searchParams }: { searchParams: Promise<{ range?: string }> }) {

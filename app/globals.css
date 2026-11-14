@@ -204,6 +204,16 @@ main{position:relative;width:100%;overflow-x:hidden}
 .ph::after{content:"";position:absolute;inset:0;background:radial-gradient(120% 120% at 50% 120%,color-mix(in srgb,var(--background) 70%,transparent),transparent 60%);pointer-events:none}
 .ph-img{inset:0;width:100%;height:100%;object-fit:cover;background:none;filter:grayscale(.7) brightness(.9)}
 .reel-poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.5}
+.reel.has-video .reel-poster{opacity:1}
+.reel-video{position:absolute;inset:0;width:100%;height:100%;border:0;object-fit:cover;background:transparent}
+.reel-meta{pointer-events:none;z-index:2}
+.reel.has-video .reel-meta{text-shadow:0 1px 8px rgba(0,0,0,.6)}
+/* Fullscreen button for an uploaded reel: glass pill, accent on hover. */
+.reel-full{position:absolute;z-index:3;right:1rem;bottom:.75rem;display:inline-flex;align-items:center;gap:.5rem;height:2.5rem;padding:0 1rem 0 .85rem;border-radius:999px;border:1px solid var(--line-strong);background:color-mix(in srgb,var(--background) 45%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:var(--foreground);font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;transition:transform .3s var(--expo),background .3s,border-color .3s,color .3s}
+.reel-full svg{width:1.05rem;height:1.05rem;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:transform .3s var(--expo)}
+.reel-full:hover{background:var(--accent);border-color:var(--accent);color:var(--background);transform:translateY(-2px)}
+.reel-full:hover svg{transform:scale(1.15)}
+.reel-full:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .kit{margin-top:2.5rem;display:flex;flex-wrap:wrap;gap:.5rem;max-width:34rem}
 .kit .tag{font-size:.75rem;padding:.35rem .8rem}
 .ph-n{position:absolute;right:1.25rem;bottom:.5rem;z-index:1;font-size:9rem;line-height:1;color:color-mix(in srgb,var(--foreground) 9%,transparent)}
@@ -390,6 +400,8 @@ form{display:grid;gap:1.75rem}
   .reel{position:relative;left:auto;bottom:auto;transform:none;width:auto;margin:2.5rem var(--gutter) 0}
   .reel-meta{padding:.6rem .75rem;font-size:.625rem;letter-spacing:.12em}
   .play{width:3.5rem;height:3.5rem}
+  .reel-full{height:2rem;padding:0 .7rem;right:.6rem;bottom:.5rem;font-size:.6rem}
+  .reel-full span{display:none}
   .play::after{border-left-width:.8rem;border-top-width:.5rem;border-bottom-width:.5rem;margin-left:.2rem}
   .cue{bottom:1.25rem;font-size:.6875rem}
 

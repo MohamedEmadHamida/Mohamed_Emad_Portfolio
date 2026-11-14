@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useRef, useState, type DragEvent } from "react";
 import { uploadFile } from "@/lib/upload-client";
-import { isVideo, UPLOAD_RULES, type UploadFolder, type UploadKind, type UploadMode } from "@/lib/uploads";
+import { isVideo, isVimeo, UPLOAD_RULES, type UploadFolder, type UploadKind, type UploadMode } from "@/lib/uploads";
 
 /** Set once by the editor from the server: where uploads go on this deployment. */
 export const UploadModeContext = createContext<UploadMode>("none");
@@ -56,7 +56,9 @@ export function MediaField({ id, kind, folder, value, onChange }: Props) {
       <div className="adm-media-row">
         {kind !== "file" &&
           (value ? (
-            isVideo(value) ? (
+            isVimeo(value) ? (
+              <span className="adm-media-thumb empty">Vimeo</span>
+            ) : isVideo(value) ? (
               <video className="adm-media-thumb" src={value} muted loop autoPlay playsInline />
             ) : (
               <img className="adm-media-thumb" src={value} alt="" />

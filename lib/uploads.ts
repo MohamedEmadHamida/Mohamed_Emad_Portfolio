@@ -36,6 +36,27 @@ export function cleanFileName(name: string) {
 /** True when a media URL points at a video file (webm, mp4, mov). */
 export const isVideo = (url: string) => /\.(webm|mp4|mov)(\?|#|$)/i.test(url);
 
+/** The numeric id (and private hash, for unlisted videos) of a Vimeo link, or null. */
+export function vimeoId(url: string): { id: string; hash?: string } | null {
+  const m = url.match(/^https:\/\/(?:www\.|player\.)?vimeo\.com\/(?:video\/)?(\d+)(?:\/([0-9a-f]+))?/i);
+  if (!m) return null;
+  const h = url.match(/[?&]h=([0-9a-f]+)/i)?.[1];
+  return { id: m[1], hash: m[2] ?? h };
+}
+export const isVimeo = (url: string) => vimeoId(url) !== null;
+
+/** Player URL for a Vimeo link, e.g. muted autoplay on a loop. Null when the link is not Vimeo. */
+export function vimeoEmbedUrl(url: string, o: { autoplay?: boolean; muted?: boolean; loop?: boolean } = {}) {
+  const v = vimeoId(url);
+  if (!v) return null;
+  const q = new URLSearchParams({ title: "0", byline: "0", portrait: "0", dnt: "1", autopause: "0" });
+  if (v.hash) q.set("h", v.hash);
+  if (o.autoplay) q.set("autoplay", "1");
+  if (o.muted) q.set("muted", "1");
+  if (o.loop) q.set("loop", "1");
+  return `https://player.vimeo.com/video/${v.id}?${q}`;
+}
+
 export const isBlobUrl = (url: string) => /^https:\/\/[a-z0-9-]+\.public\.blob\.vercel-storage\.com\//i.test(url);
 
 /** A link that downloads instead of opening (Blob honours ?download=1; same-origin files use the download attribute). */

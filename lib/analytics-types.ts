@@ -10,6 +10,7 @@ export const EVENT_NAMES = [
   "form_submit",
   "nav",
   "asset_download",
+  "reel_fullscreen",
 ] as const;
 export type EventName = (typeof EVENT_NAMES)[number];
 

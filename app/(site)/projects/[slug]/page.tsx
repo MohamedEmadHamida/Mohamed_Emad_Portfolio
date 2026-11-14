@@ -90,7 +90,7 @@ export default async function ProjectPage({ params }: Params) {
           {p.video ? (
             <AutoVideo className="proj-film" src={p.video} poster={p.image} label={p.alt} controls />
           ) : (
-            <Image src={p.image} alt={p.alt} fill priority sizes="100vw" />
+            <Image src={p.image} alt={p.alt} fill priority sizes="100vw" quality={90} />
           )}
         </figure>
 
@@ -127,7 +127,7 @@ export default async function ProjectPage({ params }: Params) {
             <span className="label">Next project</span>
             <span className="next-title display">{next.title}</span>
             <span className="ph next-ph">
-              <Image className="ph-art ph-img" src={next.image} alt="" fill sizes="(min-width:768px) 40vw, 100vw" />
+              <Image className="ph-art ph-img" src={next.image} alt="" fill sizes="(min-width:768px) 40vw, 100vw" quality={90} />
             </span>
           </Link>
         </section>
