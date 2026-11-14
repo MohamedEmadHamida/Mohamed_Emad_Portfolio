@@ -15,7 +15,8 @@ export function SmoothScroll() {
 
   useEffect(() => {
     markBooted();
-    const lenis = new Lenis({ smoothWheel: true });
+    // A lower lerp makes wheel scrolling glide a little longer before it settles.
+    const lenis = new Lenis({ smoothWheel: true, lerp: 0.08 });
     setLenis(lenis);
     let raf = requestAnimationFrame(function loop(t) {
       lenis.raf(t);

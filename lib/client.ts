@@ -37,8 +37,15 @@ let booted = false;
 export const hasBooted = () => booted;
 export const markBooted = () => { booted = true; };
 
+/** Ease in and out: starts gently, speeds up, settles softly. */
+const easeInOutCubic = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+
 export function scrollToElement(el: HTMLElement) {
-  if (lenis) lenis.scrollTo(el);
+  if (lenis) {
+    // Longer trips take a little longer, so far jumps do not feel like a teleport.
+    const dist = Math.abs(el.getBoundingClientRect().top);
+    lenis.scrollTo(el, { duration: Math.min(2.2, 0.9 + dist / 4000), easing: easeInOutCubic });
+  }
   else el.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth" });
 }
 

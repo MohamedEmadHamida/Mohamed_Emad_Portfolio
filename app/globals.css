@@ -17,9 +17,9 @@ ul,ol{list-style:none}
 a{color:inherit;text-decoration:none}
 button,input,textarea{font:inherit;color:inherit;background:none;border:0}
 button{cursor:pointer}
-html{font-size:16px;background:var(--background)}
-@media (max-width:1920px){html{font-size:.833333vw}}
-@media (max-width:1440px){html{font-size:1.111111vw}}
+html{font-size:14.4px;background:var(--background)}
+@media (max-width:1920px){html{font-size:.75vw}}
+@media (max-width:1440px){html{font-size:1vw}}
 @media (max-width:1024px){html{font-size:1.5625vw}}
 @media (max-width:640px){html{font-size:4vw}:root{--gutter:16px;--section:4.5rem}}
 body{background:var(--background);color:var(--foreground);font-family:var(--font-sans);font-size:1.0625rem;line-height:1.6;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden}
@@ -230,9 +230,9 @@ main{position:relative;width:100%;overflow-x:hidden}
 .pg-meta{display:flex;justify-content:space-between;align-items:center;gap:.5rem;color:#808080;font-family:var(--ff-mono),"JetBrains Mono",ui-monospace,monospace;font-size:11px;white-space:nowrap;overflow:hidden}
 .pg-meta span:first-child{font-weight:700;text-transform:uppercase;overflow:hidden;text-overflow:ellipsis}
 #pg-dim,#pg-spotlight,#pg-vignette{position:absolute;inset:0;pointer-events:none}
-#pg-dim{z-index:8;background:rgba(0,0,0,.38);transition:background .45s ease}
-#pg-spotlight{z-index:9;mix-blend-mode:overlay;transition:opacity .4s ease;background:radial-gradient(circle 340px at var(--mx,50%) var(--my,50%),rgba(255,255,255,.55) 0%,rgba(255,255,255,.3) 25%,rgba(255,255,255,.08) 50%,rgba(0,0,0,0) 65%,rgba(0,0,0,.3) 100%)}
-#pg-vignette{z-index:10;background:radial-gradient(ellipse at center,transparent 30%,color-mix(in srgb,var(--background) 20%,transparent) 60%,color-mix(in srgb,var(--background) 80%,transparent) 90%,var(--background) 100%)}
+#pg-dim{z-index:8;background:rgba(0,0,0,.2);transition:background .45s ease}
+#pg-spotlight{z-index:9;mix-blend-mode:overlay;transition:opacity .4s ease;background:radial-gradient(circle 560px at var(--mx,50%) var(--my,50%),rgba(255,255,255,.5) 0%,rgba(255,255,255,.3) 30%,rgba(255,255,255,.1) 58%,rgba(0,0,0,0) 75%,rgba(0,0,0,.12) 100%)}
+#pg-vignette{z-index:10;background:radial-gradient(ellipse at center,transparent 45%,color-mix(in srgb,var(--background) 12%,transparent) 68%,color-mix(in srgb,var(--background) 80%,transparent) 90%,var(--background) 100%)}
 .pg-hint{position:absolute;z-index:11;left:var(--gutter);bottom:1.5rem;pointer-events:none}
 #pg-focus-dim{position:fixed;inset:0;z-index:80;pointer-events:none;background:rgba(0,0,0,.72);opacity:0;transition:opacity .45s cubic-bezier(.22,1,.36,1)}
 #pg-focus-dim.on{opacity:1;pointer-events:auto;cursor:pointer}
